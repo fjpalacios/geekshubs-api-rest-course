@@ -1,6 +1,7 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const UserModel = require('../models/user');
 
@@ -22,7 +23,10 @@ router
       const user = await UserModel.findOne({ email })
       const isSamePassword = await bcrypt.compare(password, user.password);
       if (user && isSamePassword) {
-        res.json({message: 'User logged in', user});
+        const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET);
+        user.token = token;
+        await user.save();
+        res.json({message: 'User logged in', token, user});
       } else {
         res.status(401).json({message: 'User not logged in'});
       }

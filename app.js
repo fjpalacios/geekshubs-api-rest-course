@@ -5,6 +5,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const moviesRouter = require('./routes/movies');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/auth', usersRouter);
+app.use('/movies', moviesRouter);
 
 app.use((req, res) => {
     res.status(404).json({message: 'endpoint not found'});

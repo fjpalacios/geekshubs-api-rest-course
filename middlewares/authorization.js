@@ -3,7 +3,7 @@ const UserModel = require('../models/user');
 
 module.exports = async (req, res, next) => {
   try {
-    const authorization = req.headers.authorization;
+    const { authorization } = req.headers;
     const token = authorization.replace('Bearer', '').trim();
     if (authorization) {
       const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -12,8 +12,8 @@ module.exports = async (req, res, next) => {
         return next();
       }
     }
-    res.status(401).json({message: 'Authorization required'});
+    return res.status(401).json({ message: 'Authorization required' });
   } catch (error) {
-    res.status(401).json({message: 'Authorization required'});
+    return res.status(401).json({ message: 'Authorization required' });
   }
 };

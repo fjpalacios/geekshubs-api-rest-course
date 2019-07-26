@@ -4,7 +4,16 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "pretest": "eslint --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": ["npm run pretest", "git add"]
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
@@ -17,6 +26,11 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "husky": "^3.0.1",
+    "lint-staged": "^9.2.1",
     "nodemon": "^1.19.1"
   }
 }

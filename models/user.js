@@ -5,25 +5,25 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
     minlength: 8,
-    required: true
+    required: true,
   },
   token: {
     type: String,
-    required: false
-  }
-})
+    required: false,
+  },
+});
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function encrypt(next) {
   const user = this;
   if (user.isModified('password')) {
     bcrypt
       .hash(user.password, 9)
-      .then(hash => {
+      .then((hash) => {
         user.password = hash;
         return next();
       })
@@ -35,4 +35,4 @@ UserSchema.pre('save', function(next) {
 
 const User = mongoose.model('Users', UserSchema);
 
-module.exports = User
+module.exports = User;

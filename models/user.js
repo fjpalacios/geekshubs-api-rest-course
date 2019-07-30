@@ -58,6 +58,13 @@ UserSchema.methods.deleteJWT = async function deleteJwt(token) {
   throw new Error('Token missmatch');
 };
 
+UserSchema.statics.isValidLogin = async function validLogin(email, password) {
+  const UserModel = this;
+  const user = await UserModel.findOne({ email });
+  const isSamePassword = await bcrypt.compare(password, user.password);
+  return user && isSamePassword ? user : null;
+};
+
 const User = mongoose.model('Users', UserSchema);
 
 module.exports = User;

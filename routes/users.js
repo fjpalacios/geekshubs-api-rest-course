@@ -1,5 +1,4 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const UserModel = require('../models/user');
 const authorization = require('../middlewares/authorization');
 
@@ -20,9 +19,8 @@ router
   .post('/login', async (req, res) => {
     try {
       const { email, password } = req.body;
-      const user = await UserModel.findOne({ email });
-      const isSamePassword = await bcrypt.compare(password, user.password);
-      if (user && isSamePassword) {
+      const user = await UserModel.isValidLogin(email, password);
+      if (user) {
         await user.createAndSaveJWT();
         res.json({ message: 'User logged in', user });
       } else {
@@ -37,7 +35,7 @@ router
     try {
       const user = await UserModel.findById(req.userId);
       if (user) {
-        const token = authorization.replace('Bearer', '').trim();
+        const token = req.headers.authorization.replace('Bearer', '').trim();
         await user.deleteJWT(token);
         res.json({ message: 'User logged out' });
       } else {

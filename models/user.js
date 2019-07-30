@@ -33,6 +33,12 @@ UserSchema.pre('save', function encrypt(next) {
   }
 });
 
+UserSchema.methods.toJSON = function remoePassword() {
+  const user = this.toObject();
+  delete user.password;
+  return { ...user };
+};
+
 const User = mongoose.model('Users', UserSchema);
 
 module.exports = User;

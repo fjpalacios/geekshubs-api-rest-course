@@ -3,5 +3,8 @@
   "rules": {
     "no-underscore-dangle": "off",
     "disable-next-line": "no-alert"
+  },
+  "env": {
+    "jest": true
   }
 }

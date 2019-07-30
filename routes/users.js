@@ -1,6 +1,5 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const UserModel = require('../models/user');
 
 const router = express.Router();
@@ -23,10 +22,8 @@ router
       const user = await UserModel.findOne({ email });
       const isSamePassword = await bcrypt.compare(password, user.password);
       if (user && isSamePassword) {
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        user.token = token;
-        await user.save();
-        res.json({ message: 'User logged in', token, user });
+        await user.createAndSaveJWT();
+        res.json({ message: 'User logged in', user });
       } else {
         res.status(401).json({ message: 'User not logged in' });
       }

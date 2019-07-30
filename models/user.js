@@ -45,7 +45,17 @@ UserSchema.methods.createAndSaveJWT = async function createJwt() {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
   user.token = token;
   await user.save();
-  return user.toObject();
+  return user;
+};
+
+UserSchema.methods.deleteJWT = async function deleteJwt(token) {
+  const user = this;
+  if (user.token === token) {
+    user.token = undefined;
+    await user.save();
+    return user;
+  }
+  throw new Error('Token missmatch');
 };
 
 const User = mongoose.model('Users', UserSchema);

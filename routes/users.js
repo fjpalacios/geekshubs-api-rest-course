@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const UserModel = require('../models/user');
+const authorization = require('../middlewares/authorization');
 
 const router = express.Router();
 
@@ -26,6 +27,21 @@ router
         res.json({ message: 'User logged in', user });
       } else {
         res.status(401).json({ message: 'User not logged in' });
+      }
+    } catch (error) {
+      const message = error.message || error.errmsg;
+      res.status(500).json({ message: `Error: ${message}` });
+    }
+  })
+  .get('/logout', authorization, async (req, res) => {
+    try {
+      const user = await UserModel.findById(req.userId);
+      if (user) {
+        const token = authorization.replace('Bearer', '').trim();
+        await user.deleteJWT(token);
+        res.json({ message: 'User logged out' });
+      } else {
+        res.status(401).json({ message: 'User not logged out' });
       }
     } catch (error) {
       const message = error.message || error.errmsg;

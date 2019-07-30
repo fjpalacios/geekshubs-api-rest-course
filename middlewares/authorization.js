@@ -9,6 +9,7 @@ module.exports = async (req, res, next) => {
       const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await UserModel.findById(tokenDecoded.id);
       if (user.token === token) {
+        req.userId = tokenDecoded.id;
         return next();
       }
     }
